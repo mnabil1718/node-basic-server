@@ -12,8 +12,35 @@ const host = 'localhost';
 const handler = (req, res) => {
     res.setHeader('Content-Type', 'text/html');
     res.statusCode = 200;
-    res.end('<h1>Halo HTTP Server!</h1>');
-}
+    const { method } = req;
+
+    if (method === 'GET') {
+        res.end('<h1>Hello!</h1>');
+    }
+
+    if (method === 'POST') {
+        let body = [];
+
+        req.on('data', (chunk) => {
+            body.push(chunk);
+        });
+
+        req.on('end', () => {
+            body = Buffer.concat(body).toString();
+            const { name } = JSON.parse(body);
+            res.end(`<h1>Hai, ${name}!</h1>`);
+        });
+
+    }
+
+    if (method === 'PUT') {
+        res.end('<h1>Bonjour!</h1>');
+    }
+
+    if (method === 'DELETE') {
+        res.end('<h1>Salam!</h1>');
+    }
+};
 
 
 const server = http.createServer(handler);
